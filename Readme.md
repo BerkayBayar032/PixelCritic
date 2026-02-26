@@ -6,7 +6,7 @@
 
 ## Proje Hakkında
 
-![Ürün Tanıtım Görseli](Product.png)
+![Ürün Tanıtım Görseli](PixelCritic_afis.png)
 
 **Proje Tanımı:** 
 > Projenin ne iş yaptığını anlatan bir paragraflık tanıtım metni buraya yazılacaktır.
@@ -132,4 +132,5 @@ Kendi reponuza ekledikten sonra projeyi kendi bilgilerinizle güncellemeniz gere
 - **Tüm placeholder'ları değiştirin:** (örn: [Grup Üyesi 2], [Soyisim], PROJE ADI vb.) kendi bilgilerinizle değiştirin
 - **Dokümantasyon:** Tüm dokümantasyon dosyalarını eksiksiz doldurun
 - **Görev dağılımı:** Her ekip üyesi kendi görevlerini tamamlamalıdır
+
 - **İşbirliği:** Collaborator olarak eklenen üyeler, projeye doğrudan commit ve push yapabilirler
