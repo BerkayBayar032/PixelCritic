@@ -2,7 +2,7 @@
 
 **OpenAPI Spesifikasyon Dosyası:** [pixelcritic.yaml](pixelcritic.yaml)
 
-Bu doküman, PixelCritic oyun kütüphanesi ve inceleme platformu için OpenAPI Specification (OAS) 3.0 standardına göre hazırlanmış RESTful API mimarisini içermektedir.
+Bu doküman, OpenAPI Specification (OAS) 3.0 standardına göre hazırlanmış örnek bir API tasarımını içermektedir.
 
 ## OpenAPI Specification
 
