@@ -129,6 +129,8 @@ const forgotPassword = async (req, res) => {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    connectionTimeout: 10000,
+    socketTimeout: 10000,
   });
 
   const mailOptions = {
