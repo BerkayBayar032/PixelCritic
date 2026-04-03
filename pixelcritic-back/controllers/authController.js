@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const User = require('../models/User');
 
 const generateToken = (id) => {
@@ -121,39 +121,27 @@ const forgotPassword = async (req, res) => {
 
     const resetUrl = `https://pixelcritic.net/reset-password?token=${resetToken}`;
 
-    // Send email
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      connectionTimeout: 10000,
-      socketTimeout: 10000,
-    });
-
-    const mailOptions = {
-      from: `"PixelCritic" <${process.env.SMTP_USER}>`,
-      to: user.email,
-      subject: 'Reset Your PixelCritic Password',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #e0e0e0; padding: 32px; border-radius: 12px;">
-          <h1 style="color: #ff5722; text-align: center; margin-bottom: 8px;">PixelCritic</h1>
-          <h2 style="text-align: center; color: #ffffff; margin-top: 0;">Password Reset</h2>
-          <p>Hi <strong>${user.username}</strong>,</p>
-          <p>You requested a password reset. Click the button below to set a new password:</p>
-          <div style="text-align: center; margin: 28px 0;">
-            <a href="${resetUrl}" style="background: #ff5722; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">Reset Password</a>
-          </div>
-          <p style="color: #999; font-size: 13px;">This link expires in 15 minutes. If you didn't request this, you can safely ignore this email.</p>
-        </div>
-      `,
-    };
+    // Send email via Resend (HTTPS-based, works on Render free tier)
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     try {
-      await transporter.sendMail(mailOptions);
+      await resend.emails.send({
+        from: 'PixelCritic <onboarding@resend.dev>',
+        to: user.email,
+        subject: 'Reset Your PixelCritic Password',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background: #1a1a2e; color: #e0e0e0; padding: 32px; border-radius: 12px;">
+            <h1 style="color: #ff5722; text-align: center; margin-bottom: 8px;">PixelCritic</h1>
+            <h2 style="text-align: center; color: #ffffff; margin-top: 0;">Password Reset</h2>
+            <p>Hi <strong>${user.username}</strong>,</p>
+            <p>You requested a password reset. Click the button below to set a new password:</p>
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="${resetUrl}" style="background: #ff5722; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">Reset Password</a>
+            </div>
+            <p style="color: #999; font-size: 13px;">This link expires in 15 minutes. If you didn't request this, you can safely ignore this email.</p>
+          </div>
+        `,
+      });
       console.log(`Password reset email sent to ${user.email}`);
     } catch (err) {
       console.error('Failed to send reset email:', err.message);
