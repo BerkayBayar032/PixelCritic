@@ -56,7 +56,7 @@ app.use(morgan('dev'));
 
 // CORS — allow requests from the React frontend
 app.use(cors({
-  origin: [process.env.CLIENT_URL, 'http://localhost:3000', 'http://localhost:5173', 'https://pixelcritic-gamma.vercel.app'].filter(Boolean),
+  origin: [process.env.CLIENT_URL, 'http://localhost:3000', 'http://localhost:5173', 'https://pixelcritic-gamma.vercel.app', 'https://pixelcritic.net', 'https://www.pixelcritic.net'].filter(Boolean),
   credentials: true,
 }));
 
