@@ -145,7 +145,7 @@ export default function PublicProfile() {
       const result = await generateAIAvatars(aiPrompt.trim());
       if (result.avatars && result.avatars.length > 0) {
         // Ensure avatar URLs have the full backend origin for <img> tags
-        const BACKEND_URL = 'http://localhost:5000';
+        const BACKEND_URL = 'https://pixelcritic-backend.onrender.com';
         const avatarsWithFullUrl = result.avatars.map((a: any) => ({
           ...a,
           url: a.url.startsWith('/') ? `${BACKEND_URL}${a.url}` : a.url,
