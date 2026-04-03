@@ -1,0 +1,680 @@
+openapi: 3.0.3
+info:
+  title: PixelCritic API
+  version: 1.0.0
+  description: >
+    Bu API, PixelCritic oyun kütüphanesi ve inceleme platformu için
+    tasarlanmış bir RESTful servistir. Kullanıcı kaydı, oyun keşfi, kişisel
+    kütüphane yönetimi (oynadıklarım, oynayacaklarım vb.), puanlama, yorum 
+    sistemi ve yapay zeka destekli öneri/duygu analizi işlemlerini kapsar. 
+    API, JWT tabanlı kimlik doğrulama ile korunmaktadır.
+  contact:
+    name: Berkay
+    email: bayarberkay032@gmail.com
+
+servers:
+  - url: https://api.pixelcritic.net/v1
+    description: Üretim sunucusu (Production)
+  - url: https://staging-api.pixelcritic.net/v1
+    description: Test sunucusu (Staging)
+  - url: http://localhost:5000/api
+    description: Yerel geliştirme sunucusu (Development)
+
+tags:
+  - name: Auth
+    description: Kimlik doğrulama, kayıt ve şifre işlemleri
+  - name: Kullanıcılar
+    description: Kullanıcı profili ve istatistik işlemleri
+  - name: Oyunlar
+    description: Oyun keşfi, arama, filtreleme ve detay işlemleri
+  - name: Kütüphane
+    description: Kişisel oyun kütüphanesi yönetimi
+  - name: İncelemeler ve Puanlar
+    description: Oyunlara puan verme ve inceleme yazma işlemleri
+  - name: Yapay Zeka
+    description: AI destekli öneri ve NLP duygu analizi işlemleri
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Yeni Kullanıcı Kaydı
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        "201":
+          description: Kullanıcı başarıyla oluşturuldu
+        "400":
+          description: Geçersiz istek verisi (Örn. e-posta kullanımda)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Kullanıcı Girişi
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        "200":
+          description: Giriş başarılı, JWT Token döner
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIs..."
+        "401":
+          description: E-posta veya şifre hatalı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Çıkış Yapma
+      operationId: logoutUser
+      responses:
+        "200":
+          description: Oturum başarıyla sonlandırıldı
+        "401":
+          description: Kimlik doğrulama başarısız
+
+  /api/auth/reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Şifre Sıfırlama Talebi
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Sıfırlama bağlantısı gönderildi
+
+  /api/users/profile:
+    get:
+      tags:
+        - Kullanıcılar
+      summary: Kendi Profilini Görüntüle
+      operationId: getMyProfile
+      responses:
+        "200":
+          description: Profil detayları getirildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "401":
+          description: Kimlik doğrulama başarısız
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Kullanıcılar
+      summary: Profil Bilgilerini Güncelle
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateInput'
+      responses:
+        "200":
+          description: Profil güncellendi
+        "400":
+          description: Geçersiz veri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/{username}:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        description: Görüntülenecek kullanıcının adı
+        schema:
+          type: string
+    get:
+      tags:
+        - Kullanıcılar
+      summary: Başka Bir Kullanıcının Profilini Görüntüle
+      operationId: getUserProfile
+      security: []
+      responses:
+        "200":
+          description: Kullanıcı profili başarıyla getirildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        "404":
+          description: Kullanıcı bulunamadı
+
+  /api/games:
+    get:
+      tags:
+        - Oyunlar
+      summary: Oyun Listesi, Arama ve Filtreleme
+      operationId: listGames
+      security: []
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Oyun ismine göre arama
+          schema:
+            type: string
+        - name: genre
+          in: query
+          required: false
+          description: Oyun türüne göre filtreleme (Örn. RPG, Action)
+          schema:
+            type: string
+        - name: platform
+          in: query
+          required: false
+          description: Platforma göre filtreleme (Örn. PC, PS5)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Oyunlar listelendi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameDetail'
+
+  /api/games/{gameid}:
+    parameters:
+      - name: gameid
+        in: path
+        required: true
+        description: Oyunun benzersiz kimlik numarası
+        schema:
+          type: string
+    get:
+      tags:
+        - Oyunlar
+      summary: Oyun Detayı Getir
+      operationId: getGameDetail
+      security: []
+      responses:
+        "200":
+          description: Oyun detayı başarıyla getirildi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameDetail'
+        "404":
+          description: Oyun bulunamadı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/library:
+    post:
+      tags:
+        - Kütüphane
+      summary: Kütüphaneye Oyun Ekle
+      operationId: addGameToLibrary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LibraryItemInput'
+      responses:
+        "201":
+          description: Oyun kütüphaneye eklendi
+        "400":
+          description: Geçersiz veri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "401":
+          description: Kimlik doğrulama başarısız
+
+  /api/library/{gameid}:
+    parameters:
+      - name: gameid
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - Kütüphane
+      summary: Kütüphanedeki Oyunun Durumunu Güncelle
+      operationId: updateLibraryStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [played, playing, plan_to_play, dropped]
+      responses:
+        "200":
+          description: Durum güncellendi
+        "404":
+          description: Kütüphanede kayıt bulunamadı
+    delete:
+      tags:
+        - Kütüphane
+      summary: Oyunu Kütüphaneden Sil
+      operationId: deleteFromLibrary
+      responses:
+        "204":
+          description: Başarıyla silindi
+
+  /api/games/{gameid}/ratings:
+    parameters:
+      - name: gameid
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: Oyuna Puan Ver (1-10)
+      operationId: rateGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingInput'
+      responses:
+        "201":
+          description: Puan kaydedildi
+    put:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: Verilen Puanı Güncelle
+      operationId: updateRating
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingInput'
+      responses:
+        "200":
+          description: Puan güncellendi
+    delete:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: Verilen Puanı Sil
+      operationId: deleteRating
+      responses:
+        "204":
+          description: Puan silindi
+
+  /api/games/{gameid}/reviews:
+    parameters:
+      - name: gameid
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: Oyunun İncelemelerini Listele
+      operationId: listGameReviews
+      security: []
+      responses:
+        "200":
+          description: İncelemeler listelendi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+    post:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: Oyuna İnceleme Yaz
+      operationId: writeReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        "201":
+          description: İnceleme eklendi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+
+  /api/reviews/{reviewid}:
+    parameters:
+      - name: reviewid
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: İncelemeyi Güncelle
+      operationId: updateReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        "200":
+          description: İnceleme güncellendi
+    delete:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: İncelemeyi Sil
+      operationId: deleteReview
+      responses:
+        "204":
+          description: İnceleme silindi
+        "403":
+          description: Sadece kendi incelemenizi silebilirsiniz
+
+  /api/reviews/{reviewid}/vote:
+    parameters:
+      - name: reviewid
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - İncelemeler ve Puanlar
+      summary: İncelemeyi Oyla (Upvote/Downvote)
+      operationId: voteReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                voteType:
+                  type: string
+                  enum: [upvote, downvote]
+      responses:
+        "200":
+          description: Oy kaydedildi
+
+  /api/ai/recommendations:
+    get:
+      tags:
+        - Yapay Zeka
+      summary: Kişiselleştirilmiş AI Oyun Önerileri
+      operationId: getRecommendations
+      responses:
+        "200":
+          description: Öneri listesi oluşturuldu
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameDetail'
+
+  /api/ai/analyze-review:
+    post:
+      tags:
+        - Yapay Zeka
+      summary: İnceleme Metni İçin NLP Duygu Analizi
+      operationId: analyzeReviewSentiment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "Oyunun mekanikleri çok hantal, hiç beğenmedim."
+      responses:
+        "200":
+          description: Analiz sonucu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sentiment:
+                    type: string
+                    enum: [positive, negative, neutral]
+                    example: "negative"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'İstek başlığına "Authorization: Bearer <token>" eklenmelidir.'
+
+  schemas:
+    RegisterInput:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "PixelGamer"
+        email:
+          type: string
+          format: email
+          example: "gamer@example.com"
+        password:
+          type: string
+          format: password
+      required:
+        - username
+        - email
+        - password
+
+    LoginInput:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: "Kullanıcı adı veya E-posta"
+          example: "gamer@example.com"
+        password:
+          type: string
+          format: password
+      required:
+        - identifier
+        - password
+
+    UserProfile:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "usr123"
+        username:
+          type: string
+          example: "PixelGamer"
+        bio:
+          type: string
+          example: "JRPG hayranı, retro koleksiyoncusu."
+        stats:
+          type: object
+          properties:
+            totalGames:
+              type: integer
+              example: 45
+            totalReviews:
+              type: integer
+              example: 12
+
+    ProfileUpdateInput:
+      type: object
+      properties:
+        bio:
+          type: string
+          example: "Yeni profil açıklamam."
+        avatarUrl:
+          type: string
+
+    GameDetail:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "gm456"
+        title:
+          type: string
+          example: "Dark Souls 3"
+        developer:
+          type: string
+          example: "FromSoftware"
+        genres:
+          type: array
+          items:
+            type: string
+          example: ["Action RPG", "Souls-like"]
+        averageScore:
+          type: number
+          format: float
+          example: 9.2
+        releaseYear:
+          type: integer
+          example: 2016
+
+    LibraryItemInput:
+      type: object
+      properties:
+        gameId:
+          type: string
+          example: "gm456"
+        status:
+          type: string
+          enum: [played, playing, plan_to_play, dropped]
+          example: "playing"
+      required:
+        - gameId
+        - status
+
+    RatingInput:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 9
+      required:
+        - rating
+
+    ReviewInput:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 10
+          example: "Zorlayıcı ama bir o kadar da tatmin edici bir deneyim."
+      required:
+        - content
+
+    Review:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "rev789"
+        author:
+          type: string
+          example: "PixelGamer"
+        content:
+          type: string
+          example: "Zorlayıcı ama bir o kadar da tatmin edici bir deneyim."
+        sentimentTag:
+          type: string
+          enum: [positive, negative, neutral]
+          example: "positive"
+        upvotes:
+          type: integer
+          example: 14
+        createdOn:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      description: Hata durumlarında döndürülen standart hata yanıtı
+      properties:
+        message:
+          type: string
+          description: Hatayı açıklayan mesaj
+          example: "Kayıt bulunamadı veya yetkisiz erişim"
+      required:
+        - message
