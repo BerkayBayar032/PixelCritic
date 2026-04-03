@@ -118,7 +118,7 @@ const forgotPassword = async (req, res) => {
     expiresIn: '15m',
   });
 
-  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+  const resetUrl = `https://pixelcritic.net/reset-password?token=${resetToken}`;
 
   // Send email
   const transporter = nodemailer.createTransport({
