@@ -1,0 +1,551 @@
+# PixelCritic Web Frontend Görevleri
+
+**Front-end Test Videosu:** [Link buraya eklenecek](https://example.com)
+
+---
+
+## 1. Üye Olma (Kayıt) Sayfası
+
+- **API Endpoint:** `POST /auth/register`
+- **Görev:** Kullanıcı kayıt işlemi için web sayfası tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - Responsive kayıt formu (dark tema, centered card layout)
+  - Kullanıcı adı input alanı (User ikonu, autocomplete="username")
+  - Email input alanı (Mail ikonu, type="email", autocomplete="email")
+  - Şifre input alanı (Lock ikonu, type="password")
+  - "Sign Up" butonu (primary orange button, full-width)
+  - "Already have an account? Log in" linki (login sayfasına yönlendirir)
+  - Loading spinner (kayıt işlemi sırasında buton içinde Loader2 animasyonu)
+  - Ambient background glow efekti (orange/primary renkte blur)
+  - PixelCritic logosu ve başlık
+- **Form Validasyonu:**
+  - Kullanıcı adı: zorunlu, minimum 3 karakter, maksimum 30 karakter
+  - Email: zorunlu, geçerli email formatı (type="email")
+  - Şifre: zorunlu, minimum 6 karakter
+  - HTML5 native form validation (required, minLength, maxLength)
+  - Tüm alanlar doldurulmadan form gönderilemez
+  - Client-side ve server-side validation
+- **Kullanıcı Deneyimi:**
+  - Hata mesajları form üzerinde kırmızı alert kutusunda gösterilir
+  - 409 Conflict durumunda "Bu email/kullanıcı adı zaten kullanılıyor" mesajı
+  - Başarılı kayıt sonrası otomatik giriş yapılır ve ana sayfaya yönlendirilir
+  - Token ve kullanıcı bilgileri localStorage'a kaydedilir
+  - Loading state sırasında buton disabled olur
+  - Keyboard navigation desteği (Tab, Enter)
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (form fields, error, loading)
+  - Context: useAuth() hook üzerinden register fonksiyonu çağrılır
+  - Routing: React Router v6 (useNavigate ile yönlendirme)
+  - Styling: Tailwind CSS (dark tema, custom primary renk)
+  - İkonlar: Lucide React (User, Mail, Lock, ArrowRight, Loader2)
+
+---
+
+## 2. Giriş Yapma Sayfası
+
+- **API Endpoint:** `POST /auth/login`
+- **Görev:** Kullanıcı giriş işlemi ve şifre sıfırlama modu için web sayfası tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - Responsive giriş formu (dark tema, centered card layout)
+  - Email veya kullanıcı adı input alanı (Mail ikonu)
+  - Şifre input alanı (Lock ikonu, type="password")
+  - "Log In" butonu (primary orange button, full-width)
+  - "Forgot password?" linki (şifre sıfırlama moduna geçiş)
+  - "Don't have an account? Sign up" linki (kayıt sayfasına yönlendirir)
+  - "Back to Home" linki (ana sayfaya dönüş)
+  - Loading spinner (giriş işlemi sırasında)
+  - Ambient background glow efekti
+  - PixelCritic logosu ve başlık
+  - **Şifre Sıfırlama Modu:**
+    - Email input alanı (Mail ikonu)
+    - "Send Reset Link" butonu
+    - Başarı mesajı: "Check your inbox! A reset link has been sent to {email}"
+    - "Back to Login" butonu
+    - "← Back to Login" linki (normal giriş moduna dönüş)
+- **Form Validasyonu:**
+  - Identifier (email/kullanıcı adı): zorunlu
+  - Şifre: zorunlu
+  - Şifre sıfırlama modunda email: zorunlu
+- **Kullanıcı Deneyimi:**
+  - Hata mesajları form üzerinde kırmızı alert kutusunda gösterilir
+  - 401 hatası: "Geçersiz kimlik bilgileri" mesajı
+  - Başarılı giriş sonrası ana sayfaya yönlendirilir
+  - Şifre sıfırlama başarılı olduğunda yeşil başarı mesajı gösterilir
+  - Loading state sırasında butonlar disabled olur
+  - isResetMode ile giriş ve sıfırlama modları arasında geçiş
+  - clearError() ile mod değiştiğinde eski hatalar temizlenir
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (identifier, password, isResetMode, resetSent, resetLoading, resetError)
+  - Context: useAuth() hook üzerinden login fonksiyonu çağrılır
+  - Service: forgotPassword(email) doğrudan authService'den çağrılır
+  - Routing: React Router v6 (useNavigate)
+  - Styling: Tailwind CSS
+  - İkonlar: Lucide React (Mail, Lock, ArrowRight, Loader2)
+
+---
+
+## 3. Şifre Sıfırlama Sayfası
+
+- **API Endpoint:** `POST /auth/reset-password`
+- **Görev:** URL'deki token ile yeni şifre belirleme sayfası tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - Responsive form (dark tema, centered card layout)
+  - Yeni şifre input alanı (Lock ikonu, type="password")
+  - Şifre tekrar input alanı (Lock ikonu, type="password")
+  - "Reset Password" butonu (primary orange button)
+  - Loading spinner (işlem sırasında)
+  - Başarı ekranı (CheckCircle2 ikonu, yeşil renk)
+  - "Back to Login" linki
+  - Token yoksa hata mesajı gösterilir
+  - PixelCritic logosu ve başlık
+  - Ambient background glow efekti
+- **Form Validasyonu:**
+  - Yeni şifre: zorunlu, minimum 6 karakter
+  - Şifre tekrar: zorunlu, minimum 6 karakter
+  - İki şifre eşleşme kontrolü (client-side)
+  - URL'den token parametresi kontrolü (token yoksa form gösterilmez)
+- **Kullanıcı Deneyimi:**
+  - Şifreler eşleşmezse "Passwords do not match" hata mesajı
+  - Token eksikse "Invalid or missing reset token" mesajı
+  - Başarılı sıfırlama sonrası success ekranı gösterilir
+  - 3 saniye sonra otomatik olarak login sayfasına yönlendirilir
+  - Hata durumunda kırmızı alert kutusu
+  - Loading state sırasında buton disabled olur
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (password, confirmPassword, loading, error, success)
+  - URL token okuma: useSearchParams() hook'u
+  - Service: resetPasswordApi(token, password)
+  - Otomatik yönlendirme: useEffect + setTimeout (3 saniye)
+  - Routing: React Router v6 (useNavigate)
+  - İkonlar: Lucide React (Lock, Loader2, CheckCircle2)
+
+---
+
+## 4. Ana Sayfa (Home)
+
+- **API Endpoints:**
+  - `GET /games/trending?limit=6`
+  - `GET /games/new-releases?limit=6`
+  - `GET /games/genre/{genre}?limit=10`
+  - `GET /ai/recommendations`
+  - `GET /library/{userId}`
+  - `POST /library`
+  - `DELETE /library/game/{gameId}`
+- **Görev:** Landing sayfası tasarımı; trend oyunlar, yeni çıkanlar, türe göre oyunlar ve yapay zeka önerileri bölümlerinin implementasyonu
+- **UI Bileşenleri:**
+  - Hero bölümü (PixelCritic başlığı, açıklama metni, "Explore Games" CTA butonu)
+  - **Trending Games bölümü:**
+    - 6 oyunluk grid (GameCard bileşeni)
+    - "View All" butonu (Explore sayfasına yönlendirir)
+  - **AI-Powered Picks bölümü (yalnızca giriş yapmış kullanıcılar):**
+    - Kişiselleştirilmiş oyun önerileri
+    - Match score yüzdesi
+    - "For You" ve "AI-Powered" badge'leri
+    - Öneri sebebi açıklaması
+  - **Newly Released bölümü:**
+    - 6 oyunluk grid
+    - "View All" butonu (Explore sayfasına `?collection=newly-released` ile yönlendirir)
+  - **Top Rated by Genre bölümü:**
+    - Dropdown menüsü ile 23 farklı tür seçimi (Action, Adventure, Arcade, Card & Board Game, Fighting, Indie, MOBA, Music, Pinball, Platform, Point-and-click, Puzzle, Quiz/Trivia, Racing, Real Time Strategy, Role-playing, Shooter, Simulator, Sport, Strategy, Tactical, Turn-based strategy, Visual Novel, Hack and slash)
+    - Seçilen türe göre dinamik oyun listesi
+  - GameCard bileşenleri (kapak resmi, tür/tema badge'leri, platform puanları)
+  - Kütüphaneye ekleme/çıkarma butonları
+  - Giriş yapmamış kullanıcılar için login uyarı modalı
+- **Kullanıcı Deneyimi:**
+  - Sayfa yüklenirken loading spinner gösterilir
+  - Oyun kartlarında hover animasyonu (scale efekti)
+  - Kütüphane durumu badge olarak kart üzerinde gösterilir (Played, Playing, Plan to Play, Dropped)
+  - Giriş yapmadan kütüphaneye ekleme denendiğinde login modalı açılır
+  - Tür dropdown'u değiştiğinde yeni oyunlar yüklenir
+  - Responsive grid layout (mobil uyumlu)
+  - Ambient glow efektleri
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (trendingGames, newReleases, genreGames, recommendations, selectedGenre, addedGames, activeMenu, loading)
+  - Context: useAuth() hook'u ile kullanıcı durumu kontrolü
+  - Services: gameService, libraryService, aiService
+  - Routing: React Router v6 (Link, useNavigate)
+  - Bileşenler: GameCard (reusable), Navbar
+  - Styling: Tailwind CSS grid layout
+  - İkonlar: Lucide React (TrendingUp, Star, Sparkles, Clock, Gamepad2, ChevronDown)
+
+---
+
+## 5. Oyun Keşfet Sayfası (Explore)
+
+- **API Endpoints:**
+  - `GET /games?page={page}&limit=24&genre={genre}&theme={theme}&platform={platform}&developer={developer}&publisher={publisher}&minScore={min}&maxScore={max}&sort={sort}&search={search}&collection={collection}`
+  - `GET /library/{userId}`
+  - `POST /library`
+  - `DELETE /library/game/{gameId}`
+- **Görev:** Gelişmiş filtreleme, arama ve sıralama özellikleri ile oyun keşfetme sayfası tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - **Sol Panel — Filtre Sidebar'ı:**
+    - **Genres** — çoklu seçim (checkbox listesi), açılır/kapanır bölüm
+    - **Themes** — çoklu seçim (checkbox listesi), açılır/kapanır bölüm
+    - **Platforms** — çoklu seçim (checkbox listesi), açılır/kapanır bölüm
+    - **Developers** — aranabilir çoklu seçim (arama kutusu + checkbox), açılır/kapanır bölüm
+    - **Publishers** — aranabilir çoklu seçim (arama kutusu + checkbox), açılır/kapanır bölüm
+    - **Collections** — Newly Released, Trending Games seçimi
+    - **Score Range** — çift başlıklı slider (1-10 arası), min/max input alanları (Radix UI Slider)
+    - Her filtre başlığında ChevronDown ikonu ile açılır/kapanır yapı
+  - **Sağ Panel — Oyun Listesi:**
+    - Sort By dropdown (Highest Score, Lowest Score, Release Date Newest/Oldest, Alphabetical A-Z)
+    - Oyun grid'i (sayfa başına 24 oyun)
+    - GameCard bileşenleri
+    - Sayfalama butonları (Previous / Next, mevcut sayfa / toplam sayfa göstergesi)
+  - Kütüphaneye ekleme/çıkarma işlevleri
+  - Giriş yapmamış kullanıcılar için login uyarı modalı
+- **Form Validasyonu:**
+  - Score Range: min değer max değerden büyük olamaz
+  - Arama kutusu: boş bırakılabilir (opsiyonel filtre)
+  - Filtre değişikliklerinde sayfa otomatik olarak 1'e döner
+- **Kullanıcı Deneyimi:**
+  - URL query parametreleri ile filtre durumu korunur (`?collection=newly-released` gibi)
+  - `?collection=newly-released` ile gelindiğinde otomatik olarak "Release Date (Newest to Oldest)" sıralaması seçilir
+  - Filtre değişikliklerinde anlık güncelleme (debounce yok, her değişiklikte yeniden fetch)
+  - Loading state sırasında spinner gösterilir
+  - Boş sonuç durumunda bilgilendirme mesajı
+  - Filtre paneli collapse/expand animasyonu
+  - Developer/Publisher arama kutusu ile uzun listelerde hızlı filtreleme
+  - Responsive layout (mobilde filtre paneli üste taşınır)
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (games, filters, selectedGenres, selectedThemes, selectedPlatforms, selectedDevelopers, selectedPublishers, scoreRange, sortBy, currentPage, totalPages, loading, addedGames, activeMenu)
+  - URL yönetimi: useSearchParams() ile query parametresi okuma
+  - Services: gameService.getGames(params), libraryService
+  - Bileşenler: GameCard, Navbar
+  - UI Kütüphanesi: @radix-ui/react-slider (score range slider)
+  - Styling: Tailwind CSS (sidebar + content grid)
+  - İkonlar: Lucide React (ChevronDown, Search, Filter, SlidersHorizontal)
+
+---
+
+## 6. Oyun Detay Sayfası (Game Details)
+
+- **API Endpoints:**
+  - `GET /games/{gameId}`
+  - `GET /reviews/game/{gameId}?platform={platform}&sort={sort}`
+  - `GET /library/game/{gameId}`
+  - `POST /library`
+  - `DELETE /library/game/{gameId}`
+  - `GET /ratings/game/{gameId}/me`
+  - `POST /ratings`
+  - `DELETE /ratings/game/{gameId}`
+  - `POST /reviews`
+  - `DELETE /reviews/{reviewId}`
+  - `POST /reviews/{reviewId}/vote`
+  - `GET /reviews/game/{gameId}/my-votes`
+  - `GET /ai/game-analysis/{gameId}`
+- **Görev:** Tek bir oyunun tüm detaylarını, incelemelerini, puanlamalarını ve yapay zeka analizini gösteren sayfa tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - **Oyun Başlık Bölümü:**
+    - Kapak resmi (büyük boyut)
+    - Oyun adı (H1 heading)
+    - Geliştirici ve yayıncı bilgisi
+    - Çıkış yılı
+    - Tür ve tema badge'leri
+    - Platform puanları kartları (platform ikonu + puan)
+  - **Kütüphane İşlemleri:**
+    - "Add to Library" butonu (modal açar)
+    - Durum seçim modalı (Played, Playing, Plan to Play, Dropped)
+    - Kütüphanedeyse mevcut durumu gösteren badge + "Remove" butonu
+  - **Puanlama İşlemleri:**
+    - "Rate" butonu (modal açar)
+    - 10 yıldızlı puanlama arayüzü (hover ile yıldız doldurma)
+    - Platform seçim dropdown'u (oyunun platformları listelenir)
+    - Mevcut puan gösterimi + "Delete Rating" butonu
+  - **İnceleme Bölümü:**
+    - Platform filtresi dropdown menü (All Platforms + oyunun platformları)
+    - Sıralama dropdown'u (Most Liked, Most Disliked, Newest, Oldest)
+    - İnceleme yazma formu (yalnızca giriş yapmış kullanıcılar):
+      - Metin alanı (textarea, zorunlu)
+      - Opsiyonel yıldız puanı (0-10)
+      - Platform seçimi (zorunlu)
+      - "Submit Review" butonu
+    - İnceleme kartları:
+      - Kullanıcı avatarı ve adı
+      - Platform badge'i
+      - Puan yıldızları
+      - İnceleme metni
+      - Upvote / Downvote butonları (oy sayıları ile)
+      - Tarih bilgisi
+      - Silme butonu (yalnızca kendi incelemesi)
+  - **Yapay Zeka Analizi Bölümü:**
+    - AI tarafından oluşturulmuş inceleme özeti
+    - Olumlu/olumsuz noktalar listesi
+    - Genel duygu analizi (positive/negative/mixed)
+  - Giriş yapmamış kullanıcılar için login uyarı prompt'ları
+- **Form Validasyonu:**
+  - İnceleme metni: zorunlu, boş olamaz
+  - İnceleme platformu: zorunlu, seçilmesi gerekir
+  - İnceleme puanı: opsiyonel, 0-10 arası
+  - Puanlama: 1-10 arası yıldız seçimi zorunlu
+  - Puanlama platformu: zorunlu
+- **Kullanıcı Deneyimi:**
+  - Sayfa yüklenirken loading skeleton/spinner gösterilir
+  - Modal dialog'lar ile kütüphane ve puanlama işlemleri
+  - İnceleme oy butonlarında anlık UI güncellemesi
+  - Kendi incelemesi ve puanlaması varsa düzenleme/silme seçenekleri
+  - Platform filtresi ve sıralama değiştiğinde incelemeler yeniden yüklenir
+  - Yıldız puanlama arayüzünde hover efekti (doldurma animasyonu)
+  - Giriş yapmadan işlem denendiğinde uyarı mesajı
+  - Smooth scroll ve geçiş animasyonları
+  - AI analizi incelemeler yüklendikten sonra otomatik olarak getirilir
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (game, reviews, libraryEntry, myRating, myVotes, reviewContent, reviewRating, reviewPlatform, selectedPlatformFilter, sortOrder, loading states, modal states)
+  - Context: useAuth() hook'u ile kullanıcı durumu
+  - Services: gameService, reviewService, libraryService, ratingService, aiService
+  - Routing: React Router v6 (useParams ile gameId okuma)
+  - Styling: Tailwind CSS
+  - İkonlar: Lucide React (Star, ThumbsUp, ThumbsDown, Trash2, Calendar, Monitor, Gamepad2, Plus)
+
+---
+
+## 7. Kullanıcı Profil Sayfası (Public Profile)
+
+- **API Endpoints:**
+  - `GET /users/{username}`
+  - `GET /library/{userId}?status={status}`
+  - `GET /reviews/user/{userId}`
+  - `GET /ratings/user/{userId}`
+  - `GET /follows/{userId}/followers`
+  - `GET /follows/{userId}/following`
+  - `GET /follows/{userId}/check`
+  - `POST /follows/{userId}`
+  - `DELETE /follows/{userId}`
+  - `DELETE /follows/{userId}/remove-follower`
+  - `PUT /users/me`
+  - `DELETE /library/{entryId}`
+  - `POST /ai/generate-avatars`
+- **Görev:** Kullanıcı profil bilgilerini, kütüphanesini, incelemelerini, puanlarını ve sosyal bağlantılarını gösteren kapsamlı profil sayfası tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - **Profil Başlık Bölümü:**
+    - Profil fotoğrafı (circular avatar, DiceBear fallback)
+    - Kamera ikonu (kendi profilinde, avatar değiştirme)
+    - Kullanıcı adı (H1 heading)
+    - Bio metni (düzenlenebilir, kendi profilinde)
+    - Bio düzenleme: textarea + Save/Cancel butonları
+    - Takipçi sayısı / Takip edilen sayısı
+    - "Follow" / "Unfollow" butonu (başkasının profilinde)
+    - Üyelik tarihi
+  - **Yapay Zeka Avatar Oluşturucu:**
+    - Metin prompt input alanı ("Describe your avatar..." placeholder)
+    - "Generate" butonu
+    - 4 farklı stil seçeneği ile oluşturulan avatarlar (Pixel Art, Cyberpunk, Anime Style, 3D Render)
+    - Avatar seçim grid'i (tıkla ve kaydet)
+    - Varsayılan avatar seçenekleri
+    - Loading state (avatar oluşturma sırasında spinner)
+  - **Sekme (Tab) Navigasyonu — 8 sekme:**
+    - **Played** — "Played" durumundaki oyunlar (sayı badge'i)
+    - **Playing** — "Playing" durumundaki oyunlar (sayı badge'i)
+    - **Plan to Play** — "Plan to Play" durumundaki oyunlar (sayı badge'i)
+    - **Dropped** — "Dropped" durumundaki oyunlar (sayı badge'i)
+    - **Reviews** — kullanıcının yazdığı incelemeler (sayı badge'i)
+    - **Ratings** — kullanıcının verdiği puanlar (sayı badge'i)
+    - **Followers** — takipçi listesi (sayı badge'i)
+    - **Following** — takip edilen kullanıcılar (sayı badge'i)
+  - **Kütüphane Sekmeleri:**
+    - Oyun kartları grid'i (kapak resmi, başlık, tür)
+    - "X" kaldırma butonu (yalnızca kendi profilinde)
+    - Boş durum mesajı
+  - **İncelemeler Sekmesi:**
+    - İnceleme kartları (oyun adı, metin, puan, oy sayıları, tarih)
+    - Oyun kapak resmi tıklanabilir (oyun detay sayfasına yönlendirir)
+  - **Puanlar Sekmesi:**
+    - Puan kartları (oyun adı, yıldız puanı, platform bilgisi)
+    - Oyun kapak resmi tıklanabilir
+  - **Takipçiler/Takip Edilenler Sekmeleri:**
+    - Kullanıcı kartları (avatar, kullanıcı adı)
+    - "Unfollow" butonu (takip edilenler listesinde)
+    - "Remove" butonu (kendi takipçi listesinde, takipçiyi kaldırma)
+    - Tıklanabilir kullanıcı adı (profiline yönlendirir)
+- **Form Validasyonu:**
+  - Bio: serbest metin, boş bırakılabilir
+  - Avatar prompt: boş olamaz (generate butonuna basıldığında)
+- **Kullanıcı Deneyimi:**
+  - Kendi profili mi başkasının profili mi kontrolü (kullanıcı adına göre)
+  - Kendi profilinde düzenleme butonları ve kaldırma butonları görünür
+  - Başkasının profilinde Follow/Unfollow butonu görünür
+  - Tab değiştiğinde ilgili veri yüklenir (lazy loading)
+  - Bio düzenlemede inline textarea açılır, Save/Cancel butonları ile kaydedilir
+  - Avatar oluşturma 60 saniyeye kadar sürebilir, loading göstergesi
+  - Oyun kartında "X" butonuyla kütüphaneden kaldırma (onaysız, anlık)
+  - Giriş yapmadan takip denendiğinde login uyarısı
+  - Sekme sayıları badge olarak gösterilir
+  - Responsive layout (mobil uyumlu tab navigasyonu)
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (profile, libraries (played/playing/planToPlay/dropped), reviews, ratings, followers, following, isFollowing, activeTab, editingBio, bio, avatarPrompt, generatedAvatars, loading states)
+  - Context: useAuth() hook'u ile oturum kontrolü ve updateUser()
+  - Services: userService, libraryService, reviewService, ratingService, followService, aiService
+  - Routing: React Router v6 (useParams ile username okuma)
+  - Styling: Tailwind CSS
+  - İkonlar: Lucide React (Camera, Edit3, Star, ThumbsUp, ThumbsDown, X, UserPlus, UserMinus, Loader2)
+
+---
+
+## 8. Navigasyon Çubuğu (Navbar)
+
+- **API Endpoints:**
+  - `GET /games/search?q={query}&limit=5`
+  - `GET /users/search?q={query}`
+- **Görev:** Üst navigasyon çubuğu; arama, kullanıcı menüsü ve sayfa bağlantıları tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - PixelCritic logosu ve başlık (ana sayfaya yönlendiren link)
+  - **Arama Bölümü:**
+    - Kategori filtresi dropdown'u (All, Games, Users) — ChevronDown ikonu
+    - Arama input alanı (Search ikonu, placeholder: "Search games, users...")
+    - Sonuç dropdown'u:
+      - Games bölümü (oyun adı + kapak resmi)
+      - Users bölümü (kullanıcı adı + avatar)
+      - Tıklanabilir sonuçlar (oyun detay veya kullanıcı profil sayfasına yönlendirir)
+  - **Giriş Yapmış Kullanıcı Menüsü:**
+    - Kullanıcı avatarı (circular, DiceBear fallback)
+    - Kullanıcı adı
+    - Dropdown menü:
+      - "My Profile" linki (profil sayfasına yönlendirir)
+      - "Log Out" butonu
+  - **Giriş Yapmamış Kullanıcı:**
+    - "Log In" butonu (outline style)
+    - "Sign Up" butonu (primary orange button)
+  - Sticky positioning (sayfanın üstüne sabitlenir)
+- **Kullanıcı Deneyimi:**
+  - Debounced arama (300ms gecikme ile API çağrısı)
+  - Arama sonuçları input'a yazarken anlık dropdown olarak gösterilir
+  - Dropdown dışına tıklanınca kapanır (click outside handler)
+  - Responsive tasarım (mobil uyumlu)
+  - Avatar yoksa DiceBear API'den otomatik avatar oluşturulur
+  - Kullanıcı menüsü tıkla aç/kapat toggle
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - State management: useState (searchQuery, searchCategory, searchResults, showResults, showUserMenu)
+  - Debounce: useEffect + setTimeout (300ms)
+  - Context: useAuth() hook'u ile kullanıcı durumu
+  - Services: gameService.searchGames(), userService.searchUsers()
+  - Routing: React Router v6 (Link, useNavigate)
+  - Styling: Tailwind CSS (sticky, z-index, backdrop-blur)
+  - İkonlar: Lucide React (Search, ChevronDown, User, LogOut, Menu)
+
+---
+
+## 9. Oyun Kartı Bileşeni (GameCard)
+
+- **Görev:** Tüm sayfalarda kullanılan yeniden kullanılabilir oyun kartı bileşeni tasarımı ve implementasyonu
+- **UI Bileşenleri:**
+  - Kapak resmi (aspect-ratio korunarak, hover'da scale animasyonu)
+  - Gradient overlay (resmin alt kısmında metin okunabilirliği için)
+  - Oyun başlığı
+  - Geliştirici ve yayıncı bilgisi
+  - Tür badge'leri (ilk 2 tür)
+  - Tema badge'leri (ilk 2 tema)
+  - Platform puanları kartları (platform ikonu + puan):
+    - Monitor ikonu → PC
+    - Gamepad2 ikonu → PlayStation/Xbox/diğer konsollar
+  - Kütüphane durumu badge'i (Played, Playing, Plan to Play, Dropped)
+  - "+" butonu (kütüphaneye ekleme, dropdown menü açar)
+  - Durum seçim dropdown menüsü (4 seçenek)
+  - "−" butonu (kütüphaneden çıkarma)
+- **Props:**
+  - `game` — oyun verisi nesnesi
+  - `addedGames` — kütüphaneye eklenmiş oyunların durumları (Record<string, string>)
+  - `activeMenu` — açık olan dropdown menünün oyun ID'si
+  - `handleAddGameClick(e, gameId)` — ekleme butonuna tıklama handler'ı
+  - `handleSelectStatus(e, gameId, status)` — durum seçme handler'ı
+  - `selectedPlatforms` — seçili platform filtresi (opsiyonel)
+- **Kullanıcı Deneyimi:**
+  - Hover'da kapak resmi scale animasyonu
+  - Kart tıklanınca oyun detay sayfasına yönlendirilir
+  - Dropdown menü dışına tıklanınca kapanır
+  - Kütüphane durumuna göre farklı renk badge'leri
+  - Platform puanları küçük kartlar olarak gösterilir
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - Reusable component (Home, Explore, PublicProfile sayfalarında kullanılır)
+  - Event propagation yönetimi (kart tıklaması ile buton tıklaması ayrımı)
+  - Routing: React Router v6 (useNavigate ile oyun detaya yönlendirme)
+  - Styling: Tailwind CSS (responsive grid-friendly)
+  - İkonlar: Lucide React (Plus, Minus, Star, Monitor, Gamepad2)
+
+---
+
+## 10. 404 Sayfa Bulunamadı Sayfası
+
+- **Görev:** Geçersiz URL'ler için kullanıcı dostu hata sayfası tasarımı
+- **UI Bileşenleri:**
+  - "404" büyük başlık
+  - "Page not found" açıklama metni
+  - "Back to Home" butonu (ana sayfaya yönlendiren link)
+- **Kullanıcı Deneyimi:**
+  - Temiz ve minimal tasarım
+  - Tek buton ile kolay dönüş
+  - Dark tema ile uyumlu
+- **Teknik Detaylar:**
+  - Framework: React 18 + TypeScript
+  - Routing: React Router v6 (`*` catch-all route)
+  - Styling: Tailwind CSS
+
+---
+
+## 11. Kimlik Doğrulama ve Oturum Yönetimi (Auth Context)
+
+- **API Endpoints:**
+  - `POST /auth/register`
+  - `POST /auth/login`
+  - `GET /auth/me`
+- **Görev:** Global kimlik doğrulama durumu yönetimi, oturum kalıcılığı ve otomatik oturum geri yükleme implementasyonu
+- **Sağlanan State:**
+  - `user` — mevcut kullanıcı nesnesi (`{ _id, username, email, avatar, bio }`) veya `null`
+  - `token` — JWT token string veya `null`
+  - `isLoggedIn` — boolean, kullanıcı giriş yapmış mı
+  - `loading` — boolean, async işlem devam ediyor mu
+  - `error` — string, hata mesajı veya `null`
+- **Sağlanan Fonksiyonlar:**
+  - `login(identifier, password)` — giriş yap, token'ı localStorage'a kaydet
+  - `register(username, email, password)` — kayıt ol, token'ı localStorage'a kaydet
+  - `logout()` — çıkış yap, localStorage ve state temizle
+  - `clearError()` — hata mesajını temizle
+  - `updateUser(updates)` — kullanıcı bilgilerini güncelle (bio, avatar değişikliklerinde)
+- **Teknik Detaylar:**
+  - React Context API + useContext
+  - useEffect ile sayfa yüklendiğinde localStorage'dan token kontrolü
+  - Token varsa `getMe()` ile oturum geri yükleme
+  - Axios interceptor: her istekte Authorization header'ına token ekleme
+  - 401 yanıtında otomatik token temizleme (response interceptor)
+  - `useAuth()` ve `useUser()` custom hook'ları (geriye dönük uyumluluk)
+
+---
+
+## 12. API İstemci Yapılandırması
+
+- **Görev:** Merkezi Axios instance oluşturulması, token yönetimi ve hata yakalama interceptor'larının implementasyonu
+- **Teknik Detaylar:**
+  - Base URL: `https://pixelcritic-backend.onrender.com/api`
+  - Request Interceptor: localStorage'dan token okunarak `Authorization: Bearer {token}` header'ı eklenir
+  - Response Interceptor: 401 durumunda localStorage'dan token silinir (oturum süresi dolmuşsa)
+  - Tüm servisler bu merkezi axios instance'ını kullanır
+  - AI avatar oluşturma için özel timeout: 60 saniye
+
+---
+
+## Genel Teknik Altyapı
+
+- **Framework:** React 18 + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS (dark tema, custom design token'ları)
+  - Renk şeması: Koyu arka plan + turuncu primary (#FF5722)
+  - Custom sınıflar: `bg-background`, `bg-surface`, `text-text-main`, `text-text-muted`, `border-primary`, `border-border`
+  - Glow efektleri: `shadow-[0_0_Xpx_rgba(255,87,34,0.X)]`
+- **Routing:** React Router v6
+- **State Management:** React Context API + useState
+- **HTTP Client:** Axios (merkezi instance, interceptor'lar)
+- **İkon Kütüphanesi:** Lucide React
+- **UI Kütüphanesi:** Radix UI (slider bileşeni)
+- **Avatar Fallback:** DiceBear API
+- **Deployment:** Vercel (SPA rewrites ile `vercel.json`)
+- **Responsive Tasarım:** Mobile-first, Tailwind breakpoint'leri
+- **Erişilebilirlik:** Semantic HTML, ARIA attributes, keyboard navigation
