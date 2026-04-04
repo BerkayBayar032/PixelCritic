@@ -1,0 +1,1379 @@
+{
+  "info": {
+    "_postman_id": "c6359c6e-5ddd-4690-9f6e-1489b94332d4",
+    "name": "My Collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53741938",
+    "_collection_link": "https://go.postman.co/collection/53741938-c6359c6e-5ddd-4690-9f6e-1489b94332d4?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Registeration",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/auth/register",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "   pm.environment.set(\"TOKEN\", jsonData.token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"identifier\": \"testuser\",\r\n  \"password\": \"test123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/auth/login",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetCurrentUser",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/auth/me",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Games (with filters & pagination)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games?page=1&limit=10&genre=Shooter&platform=PC (Microsoft Windows)",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "genre",
+              "value": "Shooter",
+              "type": "text"
+            },
+            {
+              "key": "platform",
+              "value": "PC (Microsoft Windows)",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetTrendingGames",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games/trending?limit=6",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games",
+            "trending"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "6"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get New Releases",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games/new-releases?limit=6",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games",
+            "new-releases"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "6"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Games",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games/search?q=zelda&limit=10",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "zelda"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Games by Genre",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games/genre/Shooter?limit=10",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games",
+            "genre",
+            "Shooter"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Game by ID",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/games/69cfdbc6c9eaf3e221ba1213",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "games",
+            "69cfdbc6c9eaf3e221ba1213"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add Game to Library",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"gameId\": \"69cfdbc6c9eaf3e221ba1213\",\r\n  \"status\": \"Playing\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User's Library",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library/:userId",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "69d0db08ad7345e0564db257"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Library Entry for a Game",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"test123456\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library/game/:gameId",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library",
+            "game",
+            ":gameId"
+          ],
+          "variable": [
+            {
+              "key": "gameId",
+              "value": "69cfdbc6c9eaf3e221ba1213"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Library Entry",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"Played\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library/:entryId",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library",
+            ":entryId"
+          ],
+          "variable": [
+            {
+              "key": "entryId",
+              "value": "69d0e7cfc9eaf3e221baab19"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Remove from Library by Entry ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"Played\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library/:entryId",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library",
+            ":entryId"
+          ],
+          "variable": [
+            {
+              "key": "entryId",
+              "value": "69d0e7cfc9eaf3e221baab19"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Remove from Library by Game ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"Played\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/library/game/:gameId\n",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "library",
+            "game",
+            ":gameId\n"
+          ],
+          "variable": [
+            {
+              "key": "gameId\n",
+              "value": "69cfdbc6c9eaf3e221ba1213"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Rate a Game",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"gameId\": \"69cfdbc6c9eaf3e221ba121e\",\r\n  \"score\": 8.5,\r\n  \"platform\": \"PlayStation 5\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/ratings",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "ratings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Rating for a Game",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"gameId\": \"69cfdbc6c9eaf3e221ba121e\",\r\n  \"score\": 8.5,\r\n  \"platform\": \"PlayStation 5\"\r\n}"
+        },
+        "url": {
+          "raw": "https://pixelcritic-backend.onrender.com/api/ratings/game/69cfdbc6c9eaf3e221ba1213/me",
+          "protocol": "https",
+          "host": [
+            "pixelcritic-backend",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "ratings",
+            "game",
+            "69cfdbc6c9eaf3e221ba1213",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Ratings for a Game",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/ratings/game/{{gameId}}",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ratings",
+            "game",
+            "{{gameId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Ratings by User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/ratings/user/{{userId}}",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ratings",
+            "user",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete My Rating",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/ratings/game/{{gameId}}",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ratings",
+            "game",
+            "{{gameId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"gameId\": \"{{gameId}}\",\r\n  \"content\": \"Amazing game with great storyline and gameplay mechanics!\",\r\n  \"rating\": 9,\r\n  \"platform\": \"PC (Microsoft Windows)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/reviews",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Reviews for a Game",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/reviews/game/{{gameId}}?platorm=PC (Microsoft Windows)&sort=newest",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews",
+            "game",
+            "{{gameId}}"
+          ],
+          "query": [
+            {
+              "key": "platorm",
+              "value": "PC (Microsoft Windows)",
+              "type": "text"
+            },
+            {
+              "key": "sort",
+              "value": "newest",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Reviews by User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/reviews/user/{{userId}}",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews",
+            "user",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vote on Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"type\": \"upvote\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/reviews/69d0f929ad7345e0564db32d/vote",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews",
+            "69d0f929ad7345e0564db32d",
+            "vote"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Votes for a Game's Reviews",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/reviews/game/{{gameId}}/my-votes",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews",
+            "game",
+            "{{gameId}}",
+            "my-votes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Review",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/reviews/69d0f929ad7345e0564db32d",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "reviews",
+            "69d0f929ad7345e0564db32d"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/users/search?q=test",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "users",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "test"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/users/testuser",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "users",
+            "testuser"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"bio\": \"Hardcore gamer and RPG enthusiast!\",\r\n  \"avatar\": \"https://example.com/my-avatar.png\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/users/me",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Follow User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Check Follow Status",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a/check",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a",
+            "check"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Followers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a/followers",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a",
+            "followers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Following",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a/following",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a",
+            "following"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Remove Follower",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a/remove-follower",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a",
+            "remove-follower"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Unfollow User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/follows/69d02bc83496d5bf0b1c157a",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "follows",
+            "69d02bc83496d5bf0b1c157a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get AI Recommendations",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/ai/recommendations",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ai",
+            "recommendations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get AI Game Analysis",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/ai/game-analysis/{{gameId}}",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ai",
+            "game-analysis",
+            "{{gameId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Generate AI Avatars",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"prompt\": \"cyberpunk ninja with purple neon\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/ai/generate-avatars",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "ai",
+            "generate-avatars"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/health",
+          "host": [
+            "{{BASE_URL}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
