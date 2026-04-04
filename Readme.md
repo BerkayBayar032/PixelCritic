@@ -21,8 +21,8 @@
 
 ## Proje Linkleri
 
-- **REST API Adresi:** [İleride eklenecek](https://api.yazmuh.com)
-- **Web Frontend Adresi:** [İleride eklenecek](https://frontend.yazmuh.com)
+- **REST API Adresi:** [Tıklayın](https://pixelcritic-backend.onrender.com)
+- **Web Frontend Adresi:** [Tıklayın](https://www.pixelcritic.net)
 
 ---
 
@@ -42,7 +42,7 @@ Proje dokümantasyonuna aşağıdaki linklerden erişebilirsiniz:
 
 1. [Gereksinim Analizi](Mehmet-Berkay-Bayar/Gereksinim-Analizi.md)
 2. [REST API Tasarımı](API-Tasarimi.md)
-3. [REST API](https://pixelcritic-backend.onrender.com)
+3. [REST API](Rest-API.md)
 4. [Web Front-End](https://www.pixelcritic.net)
 5. [Mobil Front-End](MobilFrontEnd.md)
 6. [Mobil Backend](MobilBackEnd.md)
