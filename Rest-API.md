@@ -1,6 +1,6 @@
 # Mehmet Berkay Bayar'ın REST API Metotları
 
-**API Test Videosu:** Link buraya eklenecek
+**API Test Videosu:** [Video](https://youtu.be/BVj2BnfmckA)
 
 
 
