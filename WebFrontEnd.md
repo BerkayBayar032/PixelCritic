@@ -1,4 +1,4 @@
-# PixelCritic Web Frontend Görevleri
+# Mehmet Berkay Bayar'ın Web Frontend Görevleri
 
 **Front-end Test Videosu:** [Link buraya eklenecek](https://example.com)
 
