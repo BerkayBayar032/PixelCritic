@@ -1,6 +1,6 @@
 # Mehmet Berkay Bayar'ın Web Frontend Görevleri
 
-**Front-end Test Videosu:** [Link buraya eklenecek](https://example.com)
+**Front-end Test Videosu:** [Video](https://youtu.be/-NUXA5iLf_E)
 
 ---
 
