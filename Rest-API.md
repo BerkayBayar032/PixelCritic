@@ -1,8 +1,8 @@
-# PixelCritic REST API Metotları
+# Mehmet Berkay Bayar'ın REST API Metotları
 
 **API Test Videosu:** Link buraya eklenecek
 
-**Base URL:** `https://pixelcritic-backend.onrender.com/api`
+
 
 ---
 
